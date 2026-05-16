@@ -45,6 +45,14 @@ impl Snake {
         }
     }
 
+    fn grow(&mut self) {
+        if let Some(last) = self.body.last() {
+            self.body.push(*last);
+        } else {
+            self.body.push((self.x, self.y));
+        }
+    }
+
     fn update(&mut self, key: Option<&KeyEvent>, width: usize, height: usize) {
         if let Some(ke) = key {
             if ke.code == KeyCode::Right {
@@ -60,7 +68,7 @@ impl Snake {
                 self.heading = Direction::Left;
             }
             if ke.code == KeyCode::Char(' ') {
-                self.body.push((self.x, self.y));
+                self.grow();
             }
         }
 
