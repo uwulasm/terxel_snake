@@ -17,6 +17,24 @@ struct Snake {
     body: Vec<(f32, f32)>,
 }
 
+struct Food {
+    x: f32,
+    y: f32,
+}
+
+impl Food {
+    fn new(width: usize, height: usize) -> Food {
+        Food {
+            x: rand::random_range(0..=width) as f32,
+            y: rand::random_range(0..=height) as f32,
+        }
+    }
+
+    fn draw(&self, canvas: &mut Canvas) {
+        canvas.set_pixel(self.x as usize, self.y as usize, Color::rgb(255, 0, 0));
+    }
+}
+
 impl Snake {
     fn new() -> Snake {
         Snake {
@@ -91,6 +109,7 @@ fn main() {
     enable_raw_mode().unwrap();
 
     let mut snake = Snake::new();
+    let mut food = Food::new(canvas.width(), canvas.height());
     loop {
         let mut key = None;
         if event::poll(Duration::from_secs(0)).unwrap() {
@@ -106,6 +125,7 @@ fn main() {
         canvas.clear();
         snake.update(key.as_ref(), canvas.width(), canvas.height());
         snake.draw(&mut canvas);
+        food.draw(&mut canvas);
         println!("{}", canvas.render().replace("\n", "\r\n"));
         std::io::stdout().flush().unwrap();
         std::thread::sleep(Duration::from_secs_f32(1.0/24.0));
