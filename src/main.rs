@@ -25,8 +25,17 @@ struct Food {
 impl Food {
     fn new(width: usize, height: usize) -> Food {
         Food {
-            x: rand::random_range(0..=width) as f32,
-            y: rand::random_range(0..=height) as f32,
+            x: rand::random_range(0..width) as f32,
+            y: rand::random_range(0..height) as f32,
+        }
+    }
+
+    fn update(&mut self, snake: &mut Snake, width: usize, height: usize) {
+        if self.x == snake.x && self.y == snake.y {
+            snake.grow();
+
+            self.x = rand::random_range(0..width) as f32;
+            self.y = rand::random_range(0..height) as f32;
         }
     }
 
@@ -66,9 +75,6 @@ impl Snake {
             }
             if ke.code == KeyCode::Left {
                 self.heading = Direction::Left;
-            }
-            if ke.code == KeyCode::Char(' ') {
-                self.grow();
             }
         }
 
@@ -132,11 +138,12 @@ fn main() {
         terxel::set_cursor_position(std::io::stdout(), 0, 0).unwrap();
         canvas.clear();
         snake.update(key.as_ref(), canvas.width(), canvas.height());
+        food.update(&mut snake, canvas.width(), canvas.height());
         snake.draw(&mut canvas);
         food.draw(&mut canvas);
         println!("{}", canvas.render().replace("\n", "\r\n"));
         std::io::stdout().flush().unwrap();
-        std::thread::sleep(Duration::from_secs_f32(1.0/24.0));
+        std::thread::sleep(Duration::from_secs_f32(1.0/12.0));
     }
     disable_raw_mode().unwrap();
     execute!(std::io::stdout(), Show, LeaveAlternateScreen).unwrap();
