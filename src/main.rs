@@ -3,6 +3,7 @@ use std::{io::Write, time::Duration};
 use crossterm::{cursor::{DisableBlinking, EnableBlinking, Hide, Show}, event::{self, Event, KeyCode, KeyEvent}, execute, terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode}};
 use terxel::{Canvas, Color};
 
+#[derive(PartialEq, Eq)]
 enum Direction {
     Right,
     Left,
@@ -64,16 +65,16 @@ impl Snake {
 
     fn update(&mut self, key: Option<&KeyEvent>, width: usize, height: usize) {
         if let Some(ke) = key {
-            if ke.code == KeyCode::Right {
+            if ke.code == KeyCode::Right && self.heading != Direction::Left {
                 self.heading = Direction::Right;
             }
-            if ke.code == KeyCode::Up {
+            if ke.code == KeyCode::Up && self.heading != Direction::Down {
                 self.heading = Direction::Up;
             }
-            if ke.code == KeyCode::Down {
+            if ke.code == KeyCode::Down && self.heading != Direction::Up {
                 self.heading = Direction::Down;
             }
-            if ke.code == KeyCode::Left {
+            if ke.code == KeyCode::Left && self.heading != Direction::Right {
                 self.heading = Direction::Left;
             }
         }
