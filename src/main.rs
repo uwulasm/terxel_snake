@@ -96,6 +96,13 @@ impl Snake {
             Direction::Left => self.x -= 1.0,
         }
 
+        for (x, y) in &self.body {
+            if self.x == *x && self.y == *y {
+                self.body.clear();
+                break;
+            }
+        }
+
         if self.x as usize >= width {
             self.x -= width as f32;
         }
@@ -119,7 +126,7 @@ impl Snake {
 }
 
 fn main() {
-    let mut canvas = Canvas::new(20, 20);
+    let mut canvas = Canvas::with_scale(27, 11, 4);
     execute!(std::io::stdout(), EnterAlternateScreen, Hide).unwrap();
     enable_raw_mode().unwrap();
 
